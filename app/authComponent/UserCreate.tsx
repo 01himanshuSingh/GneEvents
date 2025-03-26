@@ -6,18 +6,22 @@ import toast from "react-hot-toast";
 import useMutationData from "../hook/usmutationdata";
 import { useZodFormhook } from "../hook/zodFormhook";
 import { useLoginschema } from "../zodSchema/loginschema";
+import { canCreate } from "../hook/canCreate";
 
 function Login() {
     const router = useRouter();
-    const [errorMessage, setErrorMessage] = useState(""); // ✅ State for login error
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const { register, handleSubmit, errors } = useZodFormhook(useLoginschema(), {
+    const { register, handleSubmit, watch, errors } = useZodFormhook(useLoginschema(), {
         universityId: "",
         password: "",
     });
 
+    const universityId = watch("universityId");
+    const { data: userData } = canCreate(universityId); // ✅ Call API with debounced query
+
     const { mutate, isPending } = useMutationData({
-        mutationKey: ["login"],
+        mutationKey: ["/auth/login"],
         mutationFn: async (data: { universityId: string; password: string }) => {
             const response = await axios.post(
                 "http://localhost:3000/api/auth/login",
@@ -27,19 +31,19 @@ function Login() {
             return response.data;
         },
         onSuccess: () => {
-            toast.success("Login Successful 🎉"); // ✅ Show success toast
+            toast.success("Login Successful 🎉");
             setTimeout(() => {
-                router.push("/"); // ✅ Redirect to home page
+                router.push("/");
             }, 2000);
         },
         onError: (error: any) => {
             const message = error.response?.data?.error || "Login failed. Please try again.";
-            setErrorMessage(message); // ✅ Set error message
+            setErrorMessage(message);
         },
     });
 
     const onSubmit = handleSubmit((values: any) => {
-        setErrorMessage(""); // ✅ Clear error before submitting
+        setErrorMessage("");
         mutate(values);
     });
 
@@ -48,7 +52,6 @@ function Login() {
             <div className="w-full max-w-sm p-6 rounded-lg shadow-md bg-white">
                 <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
 
-                {/* ✅ Error Message Box Below Heading */}
                 {errorMessage && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
                         {errorMessage}
@@ -74,10 +77,12 @@ function Login() {
 
                     <button
                         type="submit"
-                        className="bg-[#635BFF] text-white p-3 rounded-lg shadow-md w-full"
+                        className={`p-3 rounded-lg shadow-md w-full ${
+                            userData?.canCreate ? "bg-red-500" : "bg-[#635BFF]"
+                        } text-white`}
                         disabled={isPending}
                     >
-                        {isPending ? "Logging in..." : "Login"}
+                        {isPending ? "Logging in..." : userData?.canCreate ? "Login as Admin" : "Login"}
                     </button>
                 </form>
             </div>

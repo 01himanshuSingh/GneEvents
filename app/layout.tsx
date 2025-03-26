@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono ,} from "next/font/google";
 import "./globals.css";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { Toaster } from "react-hot-toast";
 
@@ -27,7 +28,7 @@ export default function RootLayout({
      <QueryProvider>
         {children}
         <Toaster position="top-center" reverseOrder={false} />
-            
+        <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </body>
     </html>

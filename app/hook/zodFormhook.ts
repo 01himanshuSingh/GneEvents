@@ -12,6 +12,7 @@ export const useZodFormhook = (schema:ZodSchema,
         register,
         watch,
         reset,
+        setValue,
         formState:{errors,isValid}
     } = useForm<z.infer<typeof schema>>({
         resolver:zodResolver(schema),
@@ -23,7 +24,7 @@ export const useZodFormhook = (schema:ZodSchema,
             mutation({...values})
     }):undefined
 return {
-    register, watch , reset, isValid, errors, handleSubmit, ...(onFormSubmit && {onFormSubmit})
+    register, watch , reset, isValid, setValue, errors, handleSubmit, ...(onFormSubmit && {onFormSubmit})
 }
 
 }
