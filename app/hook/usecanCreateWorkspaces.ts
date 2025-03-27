@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-export function canCreate(universityId: string) {
+export function usecanCreateWorkspaces(universityId: string) {
     const [debouncedId, setDebouncedId] = useState(universityId);
 
     // Debounce effect

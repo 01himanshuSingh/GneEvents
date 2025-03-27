@@ -14,7 +14,7 @@ export async function GET(req) {
 
         // Verify the token
         const decoded = jwt.verify(token, JWT_SECRET);
-
+                console.log(decoded.universityId);
         return NextResponse.json({
             isAuthenticated: true,
             user: { id: decoded.id, universityId: decoded.universityId, canCreate: decoded.canCreate }
