@@ -34,6 +34,7 @@ function  Header() {
       await axios.post("/api/auth/logout", {}, { withCredentials: true });
 
       setIsLoggedIn(false);
+      setIsSidebarOpen(false)
       router.push("/auth/login");
     } catch (error) {
       console.error("Logout failed", error);
@@ -56,7 +57,7 @@ function  Header() {
       <div className="hidden md:flex">
         {isLoggedIn ? (
           <button
-            onClick={()=>console.log('sds')}
+          
             className="bg-black cursor-pointer text-white px-3 py-2 font-semibold rounded-xl shadow-md text-sm"
           >
             <p className="txet-xs">continue to Workspace</p>
